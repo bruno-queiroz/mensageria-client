@@ -1,8 +1,27 @@
+"use client";
+import { signUpUser } from "@/services/user/signUp";
 import Link from "next/link";
+import { FormEvent, useState } from "react";
 import { FaGoogle as GoogleIcon } from "react-icons/fa";
 import { SiGithub as GithubIcon } from "react-icons/si";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const submitUser = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newUser = {
+      name,
+      email,
+      password,
+    };
+
+    await signUpUser(newUser);
+  };
+
   return (
     <section className="flex flex-col gap-6">
       <h1 className="text-4xl font-bold text-center mt-8">Sign up</h1>
@@ -17,12 +36,29 @@ export default function SignUp() {
         </button>
       </div>
 
-      <form className="flex flex-col gap-4 w-[70%] mx-auto">
-        <input type="text" placeholder="Name" className="p-2 bg-gray-200" />
-        <input type="email" placeholder="Email" className="p-2 bg-gray-200" />
+      <form
+        className="flex flex-col gap-4 w-[70%] mx-auto"
+        onSubmit={submitUser}
+      >
+        <input
+          type="text"
+          placeholder="Name"
+          onInput={(e) => setName(e.currentTarget.value)}
+          value={name}
+          className="p-2 bg-gray-200"
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          onInput={(e) => setEmail(e.currentTarget.value)}
+          value={email}
+          className="p-2 bg-gray-200"
+        />
         <input
           type="password"
           placeholder="Password"
+          onInput={(e) => setPassword(e.currentTarget.value)}
+          value={password}
           className="p-2 bg-gray-200"
         />
 
