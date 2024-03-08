@@ -46,6 +46,7 @@ export default function SignUp() {
           onInput={(e) => setName(e.currentTarget.value)}
           value={name}
           className="p-2 bg-gray-200"
+          required
         />
         <input
           type="email"
@@ -53,6 +54,7 @@ export default function SignUp() {
           onInput={(e) => setEmail(e.currentTarget.value)}
           value={email}
           className="p-2 bg-gray-200"
+          required
         />
         <input
           type="password"
@@ -60,6 +62,7 @@ export default function SignUp() {
           onInput={(e) => setPassword(e.currentTarget.value)}
           value={password}
           className="p-2 bg-gray-200"
+          required
         />
 
         <button
