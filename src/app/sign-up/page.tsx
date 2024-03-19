@@ -1,26 +1,12 @@
 "use client";
-import { signUpUser } from "@/services/user/signUp";
+import { useSign } from "@/hooks/useSign";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
 import { FaGoogle as GoogleIcon } from "react-icons/fa";
 import { SiGithub as GithubIcon } from "react-icons/si";
 
 export default function SignUp() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const submitUser = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const newUser = {
-      name,
-      email,
-      password,
-    };
-
-    await signUpUser(newUser);
-  };
+  const { name, email, password, setName, setEmail, setPassword, submitUser } =
+    useSign("up");
 
   return (
     <section className="flex flex-col gap-6">
@@ -31,14 +17,17 @@ export default function SignUp() {
           <GoogleIcon />
         </button>
 
-        <button className="bg-blue-200 p-4 rounded">
+        <button
+          className="bg-blue-200 p-4 rounded"
+          onClick={() => submitUser("github")}
+        >
           <GithubIcon />
         </button>
       </div>
 
       <form
         className="flex flex-col gap-4 w-[70%] mx-auto"
-        onSubmit={submitUser}
+        onSubmit={(e) => submitUser("credentials", e)}
       >
         <input
           type="text"
