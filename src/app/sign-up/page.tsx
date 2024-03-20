@@ -1,12 +1,29 @@
 "use client";
+import { Spinner } from "@/components/Spinner";
 import { useSign } from "@/hooks/useSign";
+import { checkIfProviderIsLoading } from "@/utils/checkIfProviderIsLoading";
 import Link from "next/link";
 import { FaGoogle as GoogleIcon } from "react-icons/fa";
 import { SiGithub as GithubIcon } from "react-icons/si";
 
 export default function SignUp() {
-  const { name, email, password, setName, setEmail, setPassword, submitUser } =
-    useSign("up");
+  const {
+    name,
+    email,
+    password,
+    setName,
+    setEmail,
+    setPassword,
+    submitUser,
+    loggingState,
+  } = useSign("up");
+
+  const isGoogleLoading = checkIfProviderIsLoading(loggingState, "google");
+  const isGithubLoading = checkIfProviderIsLoading(loggingState, "github");
+  const isCredentialsLoading = checkIfProviderIsLoading(
+    loggingState,
+    "credentials"
+  );
 
   return (
     <section className="flex flex-col gap-6">
@@ -14,14 +31,14 @@ export default function SignUp() {
 
       <div className="flex gap-2 justify-center">
         <button className="bg-blue-200 p-4 rounded">
-          <GoogleIcon />
+          {isGoogleLoading ? <Spinner /> : <GoogleIcon />}
         </button>
 
         <button
           className="bg-blue-200 p-4 rounded"
           onClick={() => submitUser("github")}
         >
-          <GithubIcon />
+          {isGithubLoading ? <Spinner /> : <GithubIcon />}
         </button>
       </div>
 
@@ -56,9 +73,9 @@ export default function SignUp() {
 
         <button
           type="submit"
-          className="bg-blue-200 w-[max-content] mx-auto py-2 px-3 rounded my-2"
+          className="bg-blue-200 w-[80px] mx-auto py-2 px-3 rounded my-2"
         >
-          sign up
+          {isCredentialsLoading ? <Spinner /> : "sign up"}
         </button>
 
         <span className="text-center">
