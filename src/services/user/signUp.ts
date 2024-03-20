@@ -2,6 +2,7 @@ interface SignUpUser {
   name: string;
   email: string;
   password: string;
+  sessionToken: string | undefined;
 }
 
 export const signUpUser = async (user: SignUpUser) => {
