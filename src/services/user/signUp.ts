@@ -1,8 +1,9 @@
+import { ServerResponse, User } from "../types";
+
 interface SignUpUser {
   name: string;
   email: string;
   password: string;
-  sessionToken: string | undefined;
 }
 
 export const signUpUser = async (user: SignUpUser) => {
@@ -14,8 +15,9 @@ export const signUpUser = async (user: SignUpUser) => {
         "content-type": "application/json",
       },
       body: JSON.stringify(user),
+      credentials: "include",
     }
   );
-  const data = await response.json();
+  const data: ServerResponse<User> = await response.json();
   return data;
 };
