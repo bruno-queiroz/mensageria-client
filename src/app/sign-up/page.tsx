@@ -1,6 +1,7 @@
 "use client";
 import { Spinner } from "@/components/Spinner";
-import { useSign } from "@/hooks/useSign";
+import { useSignUpWithCredentials } from "@/hooks/useSignUpWithCredentials";
+import { useSignWithProvider } from "@/hooks/useSignWithProvider";
 import { checkIfProviderIsLoading } from "@/utils/checkIfProviderIsLoading";
 import Link from "next/link";
 import { FaGoogle as GoogleIcon } from "react-icons/fa";
@@ -14,16 +15,15 @@ export default function SignUp() {
     setName,
     setEmail,
     setPassword,
-    submitUser,
-    loggingState,
-  } = useSign("up");
+    signUpWithCredentials,
+    isCredentialsLoading,
+    invalidCredentials,
+  } = useSignUpWithCredentials();
+
+  const { loggingState, signWithProvider } = useSignWithProvider();
 
   const isGoogleLoading = checkIfProviderIsLoading(loggingState, "google");
   const isGithubLoading = checkIfProviderIsLoading(loggingState, "github");
-  const isCredentialsLoading = checkIfProviderIsLoading(
-    loggingState,
-    "credentials"
-  );
 
   return (
     <section className="flex flex-col gap-6">
@@ -36,7 +36,7 @@ export default function SignUp() {
 
         <button
           className="bg-blue-200 p-4 rounded"
-          onClick={() => submitUser("github")}
+          onClick={() => signWithProvider("github")}
         >
           {isGithubLoading ? <Spinner /> : <GithubIcon />}
         </button>
@@ -44,7 +44,7 @@ export default function SignUp() {
 
       <form
         className="flex flex-col gap-4 w-[70%] mx-auto"
-        onSubmit={(e) => submitUser("credentials", e)}
+        onSubmit={signUpWithCredentials}
       >
         <input
           type="text"
