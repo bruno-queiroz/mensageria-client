@@ -1,25 +1,27 @@
 "use client";
-
-import { signInUser } from "@/services/user/signIn";
+import { Spinner } from "@/components/Spinner";
+import { useSignInWithCredentials } from "@/hooks/useSignInWithCredentials";
+import { useSignWithProvider } from "@/hooks/useSignWithProvider";
+import { checkIfProviderIsLoading } from "@/utils/checkIfProviderIsLoading";
 import Link from "next/link";
-import { FormEvent, useState } from "react";
 import { FaGoogle as GoogleIcon } from "react-icons/fa";
 import { SiGithub as GithubIcon } from "react-icons/si";
 
 export default function SignIn() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    signInWithCredentials,
+    invalidCredentials,
+    isCredentialsLoading,
+  } = useSignInWithCredentials();
 
-  const submitUser = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { loggingState, signWithProvider } = useSignWithProvider();
 
-    const user = {
-      email,
-      password,
-    };
-
-    await signInUser(user);
-  };
+  const isGoogleLoading = checkIfProviderIsLoading(loggingState, "google");
+  const isGithubLoading = checkIfProviderIsLoading(loggingState, "github");
 
   return (
     <section className="flex flex-col gap-6">
@@ -27,17 +29,20 @@ export default function SignIn() {
 
       <div className="flex gap-2 justify-center">
         <button className="bg-blue-200 p-4 rounded">
-          <GoogleIcon />
+          {isGoogleLoading ? <Spinner /> : <GoogleIcon />}
         </button>
 
-        <button className="bg-blue-200 p-4 rounded">
-          <GithubIcon />
+        <button
+          className="bg-blue-200 p-4 rounded"
+          onClick={() => signWithProvider("github")}
+        >
+          {isGithubLoading ? <Spinner /> : <GithubIcon />}
         </button>
       </div>
 
       <form
         className="flex flex-col gap-4 w-[70%] mx-auto"
-        onSubmit={submitUser}
+        onSubmit={signInWithCredentials}
       >
         <input
           type="email"
@@ -60,7 +65,7 @@ export default function SignIn() {
           type="submit"
           className="bg-blue-200 w-[max-content] mx-auto py-2 px-3 rounded my-2"
         >
-          sign in
+          {isCredentialsLoading ? <Spinner /> : "sign in"}
         </button>
 
         <span className="text-center">
