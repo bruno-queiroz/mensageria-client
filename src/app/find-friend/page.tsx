@@ -1,5 +1,6 @@
 "use client";
 import { FindFriendItem } from "@/components/FindFriendItem";
+import { Spinner } from "@/components/Spinner";
 import { useFindFriend } from "@/hooks/useFindFriend";
 
 export default function FindFriend() {
@@ -19,11 +20,15 @@ export default function FindFriend() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-          <button className="bg-blue-200 p-2">Find</button>
+          <button className="bg-blue-200 p-2 font-semibold">
+            {isLoading ? <Spinner /> : "find"}
+          </button>
         </form>
 
         <div className="flex flex-col gap-4 w-full">
-          <FindFriendItem />
+          {users?.data?.map((user) => (
+            <FindFriendItem {...user} />
+          ))}
         </div>
       </div>
     </section>
