@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Menu } from "./Menu";
 
 export default function Header() {
   return (
@@ -18,6 +19,7 @@ export default function Header() {
             </li>
           </ul>
         </nav>
+        <Menu />
       </div>
     </header>
   );
