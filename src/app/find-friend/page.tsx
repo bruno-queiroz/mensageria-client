@@ -1,5 +1,6 @@
 "use client";
 import { FindFriendItem } from "@/components/FindFriendItem";
+import { FriendNotFound } from "@/components/FriendNotFound";
 import { Spinner } from "@/components/Spinner";
 import { useFindFriend } from "@/hooks/useFindFriend";
 
@@ -26,6 +27,8 @@ export default function FindFriend() {
         </form>
 
         <div className="flex flex-col gap-4 w-full">
+          {users?.data?.length === 0 && <FriendNotFound />}
+
           {users?.data?.map((user) => (
             <FindFriendItem {...user} />
           ))}
