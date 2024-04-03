@@ -8,6 +8,7 @@ export const useFindFriend = () => {
 
   const { mutateAsync, data: users } = useMutation({
     mutationFn: (query: string) => findFriend(query),
+    mutationKey: ["findFriend"],
   });
 
   const handleFindFriend = async (e: FormEvent<HTMLFormElement>) => {
