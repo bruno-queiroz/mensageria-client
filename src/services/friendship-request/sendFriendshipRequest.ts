@@ -1,6 +1,6 @@
 import { ServerResponse, User } from "../types";
 
-interface SendFriendshipRequest {
+export interface SendFriendshipRequest {
   fromUser: string;
   toUser: string;
 }
