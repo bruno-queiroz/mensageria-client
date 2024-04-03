@@ -1,7 +1,19 @@
-export const Spinner = ({ color = "neutral-900" }) => {
+interface SpinnerProps {
+  color?: string;
+  w: number;
+  h: number;
+}
+
+export const Spinner = ({ color = "black", w, h }: SpinnerProps) => {
   return (
     <div
-      className={`w-[24px] h-[24px] border-[5px] border-${color} mx-auto border-t-[5px] border-t-transparent rounded-full animate-spin`}
+      style={{
+        borderColor: color,
+        borderTopColor: "transparent",
+        width: w,
+        height: h,
+      }}
+      className="border-[5px] mx-auto border-t-[5px] rounded-full animate-spin"
     />
   );
 };
