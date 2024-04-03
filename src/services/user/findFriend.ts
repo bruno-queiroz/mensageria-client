@@ -1,4 +1,4 @@
-import { ServerResponse, User } from "../types";
+import { ServerResponse, UserWithFriendshipRequest } from "../types";
 
 export const findFriend = async (query: string) => {
   const response = await fetch(
@@ -7,7 +7,7 @@ export const findFriend = async (query: string) => {
       credentials: "include",
     }
   );
-  const data: ServerResponse<User[]> = await response.json();
-
+  const data: ServerResponse<UserWithFriendshipRequest[]> =
+    await response.json();
   return data;
 };
