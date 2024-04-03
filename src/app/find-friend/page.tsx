@@ -22,7 +22,9 @@ export default function FindFriend() {
             onChange={(e) => setQuery(e.target.value)}
           />
           <button className="bg-blue-200 p-2 font-semibold">
-            {isLoading ? <Spinner /> : "find"}
+            <div className="w-12">
+              {isLoading ? <Spinner wh={16} /> : "find"}
+            </div>
           </button>
         </form>
 
