@@ -31,14 +31,14 @@ export default function SignUp() {
 
       <div className="flex gap-2 justify-center">
         <button className="bg-blue-200 p-4 rounded">
-          {isGoogleLoading ? <Spinner /> : <GoogleIcon />}
+          {isGoogleLoading ? <Spinner w={16} h={16} /> : <GoogleIcon />}
         </button>
 
         <button
           className="bg-blue-200 p-4 rounded"
           onClick={() => signWithProvider("github")}
         >
-          {isGithubLoading ? <Spinner /> : <GithubIcon />}
+          {isGithubLoading ? <Spinner w={16} h={16} /> : <GithubIcon />}
         </button>
       </div>
 
@@ -75,7 +75,7 @@ export default function SignUp() {
           type="submit"
           className="bg-blue-200 w-[80px] mx-auto py-2 px-3 rounded my-2"
         >
-          {isCredentialsLoading ? <Spinner /> : "sign up"}
+          {isCredentialsLoading ? <Spinner w={20} h={20} /> : "sign up"}
         </button>
 
         <span className="text-center">
