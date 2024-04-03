@@ -1,17 +1,16 @@
 interface SpinnerProps {
   color?: string;
-  w: number;
-  h: number;
+  wh: number;
 }
 
-export const Spinner = ({ color = "black", w, h }: SpinnerProps) => {
+export const Spinner = ({ color = "black", wh }: SpinnerProps) => {
   return (
     <div
       style={{
         borderColor: color,
         borderTopColor: "transparent",
-        width: w,
-        height: h,
+        width: wh,
+        height: wh,
       }}
       className="border-[5px] mx-auto border-t-[5px] rounded-full animate-spin"
     />
