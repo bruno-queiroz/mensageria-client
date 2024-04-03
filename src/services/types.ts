@@ -1,3 +1,5 @@
+import { FriendshipRequest } from "./friendship-request/types";
+
 export interface ServerResponse<T> {
   data?: T;
   message: string;
@@ -11,3 +13,5 @@ export interface User {
   image: string | null;
   createdAt: Date;
 }
+
+export type UserWithFriendshipRequest = User & Partial<FriendshipRequest>;
