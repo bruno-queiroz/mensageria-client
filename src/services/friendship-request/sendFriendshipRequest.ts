@@ -1,11 +1,9 @@
 import { ServerResponse, User } from "../types";
+import { FriendshipRequest } from "./types";
 
-export interface SendFriendshipRequest {
-  fromUser: string;
-  toUser: string;
-}
-
-export const sendFriendshipRequest = async (request: SendFriendshipRequest) => {
+export const sendFriendshipRequest = async (
+  request: Pick<FriendshipRequest, "toUser" | "fromUser">
+) => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/api/friendship-request`,
     {

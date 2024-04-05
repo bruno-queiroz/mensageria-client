@@ -1,14 +1,13 @@
 "use client";
 
-import {
-  SendFriendshipRequest,
-  sendFriendshipRequest,
-} from "@/services/friendship-request/sendFriendshipRequest";
+import { sendFriendshipRequest } from "@/services/friendship-request/sendFriendshipRequest";
+import { FriendshipRequest } from "@/services/friendship-request/types";
 import { useMutation } from "@tanstack/react-query";
 
 export const useSendFriendshipRequest = () => {
   const { mutate, isError, isPending } = useMutation({
-    mutationFn: (req: SendFriendshipRequest) => sendFriendshipRequest(req),
+    mutationFn: (req: Pick<FriendshipRequest, "toUser" | "fromUser">) =>
+      sendFriendshipRequest(req),
     mutationKey: ["sendFriendshipRequest"],
   });
 
