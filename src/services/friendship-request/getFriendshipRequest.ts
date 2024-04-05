@@ -18,6 +18,10 @@ export const getFriendshipRequest = async (authCookie: string | undefined) => {
         Cookie: authCookie,
         Origin: process.env.NEXT_PUBLIC_DEPLOY_URL!,
       },
+      next: {
+        tags: ["getFriendshipRequest"],
+      },
+      cache: "no-cache",
     }
   );
   const data: ServerResponse<GetFriendshipRequest[]> = await response.json();
