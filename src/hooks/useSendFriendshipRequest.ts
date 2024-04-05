@@ -16,10 +16,10 @@ export const useSendFriendshipRequest = () => {
     isAccept: boolean | undefined
   ) => {
     if (isAccept === false) return;
-    const [_, userId] = document.cookie.split("=");
+    const [_, myId] = document.cookie.split("=");
     const request = {
       fromUser: friendId,
-      toUser: userId,
+      toUser: myId,
     };
     mutate(request);
   };
