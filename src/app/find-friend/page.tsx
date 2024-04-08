@@ -1,6 +1,7 @@
 "use client";
 import { FindFriendItem } from "@/components/FindFriendItem";
 import { FriendNotFound } from "@/components/FriendNotFound";
+import { SendFriendshipRequest } from "@/components/SendFriendshipRequest";
 import { Spinner } from "@/components/Spinner";
 import { useFindFriend } from "@/hooks/useFindFriend";
 
@@ -32,7 +33,9 @@ export default function FindFriend() {
           {users?.data?.length === 0 && <FriendNotFound />}
 
           {users?.data?.map((user) => (
-            <FindFriendItem {...user} />
+            <FindFriendItem {...user}>
+              <SendFriendshipRequest id={user.id} isAccept={user.isAccept} />
+            </FindFriendItem>
           ))}
         </div>
       </div>
