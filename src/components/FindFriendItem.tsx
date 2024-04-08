@@ -1,11 +1,13 @@
 import { UserWithFriendshipRequest } from "@/services/types";
+import { ReactNode } from "react";
+
+type FindFriendItemProps = UserWithFriendshipRequest & { children: ReactNode };
 
 export const FindFriendItem = ({
   name,
   image,
-  id,
-  isAccept,
-}: UserWithFriendshipRequest) => {
+  children,
+}: FindFriendItemProps) => {
   return (
     <div className="flex w-full gap-4 items-center bg-blue-100 p-3 rounded-lg">
       <div className="w-[70px] h-[70px]">
@@ -17,6 +19,7 @@ export const FindFriendItem = ({
       </div>
 
       <span className="font-semibold">{name}</span>
+      {children}
     </div>
   );
 };
