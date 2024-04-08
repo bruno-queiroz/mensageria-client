@@ -3,12 +3,16 @@
 import { sendFriendshipRequest } from "@/services/friendship-request/sendFriendshipRequest";
 import { FriendshipRequest } from "@/services/friendship-request/types";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 
 export const useSendFriendshipRequest = () => {
+  const [wasClicked, setWasClicked] = useState(false);
+
   const { mutate, isError, isPending } = useMutation({
     mutationFn: (req: Pick<FriendshipRequest, "toUser" | "fromUser">) =>
       sendFriendshipRequest(req),
     mutationKey: ["sendFriendshipRequest"],
+    onError: () => setWasClicked(false),
   });
 
   const handleFriendshipRequest = async (
@@ -17,6 +21,7 @@ export const useSendFriendshipRequest = () => {
     getMyId: () => string
   ) => {
     if (isAccept === false) return;
+    setWasClicked(true);
     const request = {
       fromUser: getMyId(),
       toUser: friendId,
@@ -27,6 +32,7 @@ export const useSendFriendshipRequest = () => {
   return {
     isError,
     isPending,
+    wasClicked,
     handleFriendshipRequest,
   };
 };
