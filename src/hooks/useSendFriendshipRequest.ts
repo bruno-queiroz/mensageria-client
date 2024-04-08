@@ -13,13 +13,13 @@ export const useSendFriendshipRequest = () => {
 
   const handleFriendshipRequest = async (
     friendId: string,
-    isAccept: boolean | undefined
+    isAccept: boolean | undefined,
+    getMyId: () => string
   ) => {
     if (isAccept === false) return;
-    const [_, myId] = document.cookie.split("=");
     const request = {
-      fromUser: friendId,
-      toUser: myId,
+      fromUser: getMyId(),
+      toUser: friendId,
     };
     mutate(request);
   };
