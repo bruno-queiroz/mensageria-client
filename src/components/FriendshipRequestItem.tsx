@@ -4,6 +4,8 @@ import { FaCheck as AcceptIcon } from "react-icons/fa6";
 import { IoMdClose as RejectIcon } from "react-icons/io";
 import { Spinner } from "./Spinner";
 import { useAcceptFriendshipRequest } from "@/hooks/useAcceptFriendshipRequest";
+import { useRejectFriendshipRequest } from "@/hooks/useRejectFriendshipRequest";
+import { getMyId } from "@/utils/getMyId";
 
 export const FriendshipRequestItem = ({
   fromUser,
@@ -13,9 +15,15 @@ export const FriendshipRequestItem = ({
 }: GetFriendshipRequest) => {
   const {
     handleAcceptFriendshipRequest,
-    isPending: acceptIsPending,
-    isError,
+    isPending: isAcceptPending,
+    isError: acceptIsError,
   } = useAcceptFriendshipRequest();
+
+  const {
+    handleRejectFriendshipRequest,
+    isPending: isRejectPending,
+    isError: rejectIsError,
+  } = useRejectFriendshipRequest();
   return (
     <div className="flex relative w-full gap-4 items-center bg-blue-100 p-3 rounded-lg">
       <div className="w-[70px] h-[70px]">
@@ -32,16 +40,18 @@ export const FriendshipRequestItem = ({
       </div>
       <div className="flex gap-2 ml-auto">
         <button
-          onClick={() => handleAcceptFriendshipRequest(fromUser)}
+          onClick={() => handleAcceptFriendshipRequest(fromUser, getMyId)}
+          disabled={isRejectPending}
           className="ml-auto bg-blue-200 p-2 text-green-500 rounded"
         >
-          {acceptIsPending ? <Spinner wh={16} /> : <AcceptIcon />}
+          {isAcceptPending ? <Spinner wh={16} /> : <AcceptIcon />}
         </button>
         <button
-          disabled={acceptIsPending}
+          onClick={() => handleRejectFriendshipRequest(fromUser, getMyId)}
+          disabled={isAcceptPending}
           className="ml-auto bg-blue-200 p-2 text-red-500 rounded"
         >
-          {false ? <Spinner wh={16} /> : <RejectIcon />}
+          {isRejectPending ? <Spinner wh={16} /> : <RejectIcon />}
         </button>
       </div>
     </div>
