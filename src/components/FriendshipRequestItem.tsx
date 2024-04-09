@@ -1,29 +1,16 @@
-"use client";
 import { GetFriendshipRequest } from "@/services/friendship-request/getFriendshipRequest";
-import { FaCheck as AcceptIcon } from "react-icons/fa6";
-import { IoMdClose as RejectIcon } from "react-icons/io";
-import { Spinner } from "./Spinner";
-import { useAcceptFriendshipRequest } from "@/hooks/useAcceptFriendshipRequest";
-import { useRejectFriendshipRequest } from "@/hooks/useRejectFriendshipRequest";
-import { getMyId } from "@/utils/getMyId";
+import { ReactNode } from "react";
+
+type FriendshipRequestItemProps = GetFriendshipRequest & {
+  children: ReactNode;
+};
 
 export const FriendshipRequestItem = ({
-  fromUser,
   image,
   name,
   sentAt,
-}: GetFriendshipRequest) => {
-  const {
-    handleAcceptFriendshipRequest,
-    isPending: isAcceptPending,
-    isError: acceptIsError,
-  } = useAcceptFriendshipRequest();
-
-  const {
-    handleRejectFriendshipRequest,
-    isPending: isRejectPending,
-    isError: rejectIsError,
-  } = useRejectFriendshipRequest();
+  children,
+}: FriendshipRequestItemProps) => {
   return (
     <div className="flex relative w-full gap-4 items-center bg-blue-100 p-3 rounded-lg">
       <div className="w-[70px] h-[70px]">
@@ -38,22 +25,8 @@ export const FriendshipRequestItem = ({
         <span className="font-semibold">{name}</span>
         <span className="right-1 bottom-1 text-sm text-gray-600">aaaaa</span>
       </div>
-      <div className="flex gap-2 ml-auto">
-        <button
-          onClick={() => handleAcceptFriendshipRequest(fromUser, getMyId)}
-          disabled={isRejectPending}
-          className="ml-auto bg-blue-200 p-2 text-green-500 rounded"
-        >
-          {isAcceptPending ? <Spinner wh={16} /> : <AcceptIcon />}
-        </button>
-        <button
-          onClick={() => handleRejectFriendshipRequest(fromUser, getMyId)}
-          disabled={isAcceptPending}
-          className="ml-auto bg-blue-200 p-2 text-red-500 rounded"
-        >
-          {isRejectPending ? <Spinner wh={16} /> : <RejectIcon />}
-        </button>
-      </div>
+
+      {children}
     </div>
   );
 };
