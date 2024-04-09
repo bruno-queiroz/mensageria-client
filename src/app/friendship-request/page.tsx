@@ -1,3 +1,4 @@
+import { FriendshipRequestController } from "@/components/FriendshipRequestController";
 import { FriendshipRequestItem } from "@/components/FriendshipRequestItem";
 import { NoFriendshipRequests } from "@/components/NoFriendshipRequests";
 import {
@@ -16,7 +17,7 @@ export default async function FriendshipRequest() {
     );
   }
   return (
-    <section>
+    <section className="pb-4">
       <h1 className="font-semibold text-4xl text-center mb-8 mt-4">
         Friendship request
       </h1>
@@ -24,7 +25,12 @@ export default async function FriendshipRequest() {
         {friendshipRequests?.data?.length === 0 && <NoFriendshipRequests />}
 
         {friendshipRequests?.data?.map((request) => (
-          <FriendshipRequestItem {...request} key={request.fromUser} />
+          <FriendshipRequestItem {...request} key={request.fromUser}>
+            <FriendshipRequestController
+              fromUser={request.fromUser}
+              key={request.fromUser}
+            />
+          </FriendshipRequestItem>
         ))}
       </div>
     </section>
