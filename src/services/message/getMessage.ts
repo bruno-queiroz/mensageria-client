@@ -15,6 +15,10 @@ export const getMessage = async (to: string | undefined) => {
         Cookie: authCookie,
         Origin: process.env.NEXT_PUBLIC_DEPLOY_URL!,
       },
+      next: {
+        tags: ["getMessage"],
+      },
+      cache: "no-cache",
     }
   );
   const data: ServerResponse<GetMessage> = await response.json();
