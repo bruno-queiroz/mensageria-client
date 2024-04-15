@@ -6,15 +6,14 @@ import {
   getFriendshipRequest,
 } from "@/services/friendship-request/getFriendshipRequest";
 import { ServerResponse } from "@/services/types";
-import { cookies } from "next/headers";
+import { getAuthCookie } from "@/utils/getAuthCookie";
 
 export default async function FriendshipRequest() {
-  const authCookie = cookies().get("next-auth.session-token");
+  const authCookie = getAuthCookie();
   let friendshipRequests: null | ServerResponse<GetFriendshipRequest[]> = null;
+
   if (authCookie) {
-    friendshipRequests = await getFriendshipRequest(
-      `${authCookie.name}=${authCookie.value}`
-    );
+    friendshipRequests = await getFriendshipRequest(authCookie);
   }
   return (
     <section className="pb-4">
