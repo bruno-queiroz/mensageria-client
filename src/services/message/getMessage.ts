@@ -22,5 +22,6 @@ export const getMessage = async (to: string | undefined) => {
     }
   );
   const data: ServerResponse<GetMessage> = await response.json();
+  data?.data?.messages.reverse();
   return data;
 };
