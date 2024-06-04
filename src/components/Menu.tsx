@@ -10,6 +10,9 @@ import {
 } from "react-icons/io";
 import { MdOutlineLogout as SignOutIcon } from "react-icons/md";
 
+import defaultPic from "../../public/default-pic.png";
+import Image from "next/image";
+
 export const Menu = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data } = useSession();
@@ -20,9 +23,9 @@ export const Menu = () => {
   return (
     <div className="ml-auto">
       <button onClick={toggleMenu}>
-        <img
-          src={data?.user?.image || ""}
-          alt=""
+        <Image
+          src={data?.user?.image || defaultPic}
+          alt="user profile picture"
           className="bg-blue-400 w-[40px] h-[40px] rounded-full"
         />
       </button>
@@ -34,8 +37,8 @@ export const Menu = () => {
 
         <aside className="fixed right-0 z-20 bg-white top-0 bottom-0 p-4 rounded-tl-lg rounded-bl-lg">
           <header className="flex items-center gap-2 mb-4">
-            <img
-              src={data?.user?.image || ""}
+            <Image
+              src={data?.user?.image || defaultPic}
               alt=""
               className="bg-blue-400 w-[40px] h-[40px] rounded-full"
             />
