@@ -13,16 +13,19 @@ export const Friends = () => {
     startSocket("http://localhost:3333", 3010);
   };
   return (
-    <div className="flex flex-col gap-2 p-2 bg-gray-400 w-full">
+    <div className="flex flex-col gap-2 p-2 bg-gray-400 w-full overflow-auto">
       <form onSubmit={test}>
         <input className="mb-4" type="text" />
         <button>
           <SearchIcon />
         </button>
       </form>
-      {friends?.data?.map((friend, i) => (
-        <Friend key={i} name={friend.name} />
-      ))}
+
+      <div className="flex flex-col gap-2">
+        {friends?.data?.map((friend, i) => (
+          <Friend key={friend.id} {...friend} />
+        ))}
+      </div>
     </div>
   );
 };
