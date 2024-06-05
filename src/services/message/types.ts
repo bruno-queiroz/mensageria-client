@@ -10,4 +10,6 @@ export interface MessageUser {
   id: string;
   name: string;
   image: string;
+  last_message: string;
+  message_amount: string;
 }
