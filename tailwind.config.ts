@@ -9,7 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       gridTemplateColumns: {
-        chat: "40% 60%",
+        chat: "40% 1fr",
       },
     },
   },
