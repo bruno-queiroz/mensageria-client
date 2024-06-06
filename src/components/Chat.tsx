@@ -20,6 +20,8 @@ export const Chat = ({ to }: ChatProps) => {
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const [chatWidth, setChatWidth] = useState(0);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,6 +57,11 @@ export const Chat = ({ to }: ChatProps) => {
     socket?.on("private-message-seen", refetchMessages);
     socket?.on("testing", test);
 
+    const padding = 32;
+    const currentChatWidth =
+      chatRef.current?.getBoundingClientRect().width || 100;
+    setChatWidth(currentChatWidth - padding);
+
     return () => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
@@ -63,7 +70,10 @@ export const Chat = ({ to }: ChatProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 justify-between bg-gray-400 min-h-screen p-2">
+    <div
+      className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2"
+      ref={chatRef}
+    >
       <header>
         <div>
           <div className="flex items-center gap-2">
@@ -82,18 +92,18 @@ export const Chat = ({ to }: ChatProps) => {
         </div>
       </header>
 
-      <div className="flex flex-col gap-2 flex-1 py-2">
+      <div className="flex flex-col gap-2 flex-1 py-2 pb-[50px]">
         {data?.data?.messages.map((message, i) => (
           <Message {...message} key={i} />
         ))}
       </div>
 
-      <footer>
+      <footer className="fixed bottom-[10px]" style={{ width: chatWidth }}>
         <form className="flex gap-2 my-auto" onSubmit={handleSendMessage}>
           <input
             type="text"
             className="bg-gray-200 flex-1 p-2"
-            placeholder="type..."
+            placeholder="Type..."
             ref={messageRef}
           />
           <button className="bg-blue-300 text-white p-2 rounded">
