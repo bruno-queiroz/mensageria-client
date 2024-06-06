@@ -52,7 +52,8 @@ export const Chat = ({ to }: ChatProps) => {
   };
 
   useEffect(() => {
-    function refetchMessages() {
+    function refetchMessages(payload: { to: string }) {
+      if (payload.to !== params.to) return;
       queryClient.invalidateQueries({ queryKey: ["getMessage"] });
     }
     function test(payload: { to: string }) {
