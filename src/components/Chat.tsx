@@ -1,79 +1,98 @@
 "use client";
 import { socket } from "@/app/layout";
 import Message from "@/components/Message";
-import { getCookie } from "cookies-next";
+import { getMessage } from "@/services/message/getMessage";
+import { sendMessage } from "@/services/message/sendMessage";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
 
-export const Chat = () => {
-  const [currentChat, setCurrentChat] = useState({
-    name: "",
-    email: "",
-    online: false,
+interface ChatProps {
+  to: string;
+}
+
+export const Chat = ({ to }: ChatProps) => {
+  const { data, isPending, refetch } = useQuery({
+    queryKey: ["getMessage"],
+    queryFn: () => getMessage(to),
   });
-
-  const [conversation, setConversation] = useState<
-    { text: string; from: string }[]
-  >([]);
-
+  const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
+  const queryClient = useQueryClient();
 
-  const sendMessage = (e: FormEvent<HTMLFormElement>) => {
-    if (!messageRef.current) return;
+  const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!messageRef.current) return;
+    const newMessage = {
+      message: messageRef.current!.value,
+      toUser: data?.data?.user.id!,
+    };
+    if (!newMessage.toUser) return;
 
-    setConversation([
-      ...conversation,
-      { from: getCookie("email")!, text: messageRef.current!.value },
-    ]);
-    console.log("is connected", socket?.connected);
-    socket?.emit("message", {
-      text: messageRef.current!.value,
-      to: currentChat.email,
+    const message = await sendMessage(newMessage);
+
+    socket?.emit("private-message", {
+      to: data?.data?.user.id,
+    });
+
+    socket?.emit("testing", {
+      to: data?.data?.user.id,
     });
     messageRef.current.value = "";
   };
 
   useEffect(() => {
-    function receiveMessage(data: string) {
-      console.log("data", data);
-      setConversation((cvt) => [...cvt, { from: "other", text: data }]);
+    function refetchMessages() {
+      queryClient.invalidateQueries({ queryKey: ["getMessage"] });
     }
-    socket?.on("message", receiveMessage);
+    function test(payload: { to: string }) {
+      if (payload.to === params.to) return;
+
+      queryClient.invalidateQueries({ queryKey: ["getFriend"] });
+    }
+    socket?.on("private-message", refetchMessages);
+    socket?.on("private-message-seen", refetchMessages);
+    socket?.on("testing", test);
 
     return () => {
-      socket?.off("message", receiveMessage);
+      socket?.off("private-message", refetchMessages);
+      socket?.off("private-message-seen", refetchMessages);
+      socket?.off("testing", test);
     };
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 justify-between bg-gray-500 min-h-screen p-2">
+    <div className="flex flex-col gap-2 justify-between bg-gray-400 min-h-screen p-2">
       <header>
         <div>
           <div className="flex items-center gap-2">
             <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
-              <img src="" alt="" />
+              <img
+                src={data?.data?.user.image}
+                alt=""
+                className="rounded-full"
+              />
             </div>
 
             <div className="flex flex-col">
-              <span>{currentChat.name}</span>
-              <span>{currentChat.online ? "Online" : "Offline"}</span>
+              <span>{data?.data?.user.name}</span>
             </div>
           </div>
         </div>
       </header>
 
       <div className="flex flex-col gap-2 flex-1 py-2">
-        {conversation.map((message, i) => (
+        {data?.data?.messages.map((message, i) => (
           <Message {...message} key={i} />
         ))}
       </div>
 
       <footer>
-        <form className="flex gap-2 my-auto" onSubmit={sendMessage}>
+        <form className="flex gap-2 my-auto" onSubmit={handleSendMessage}>
           <input
             type="text"
-            className="bg-gray-400 flex-1 p-2"
+            className="bg-gray-200 flex-1 p-2"
             placeholder="type..."
             ref={messageRef}
           />
