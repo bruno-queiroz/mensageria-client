@@ -44,6 +44,14 @@ export const Chat = ({ to }: ChatProps) => {
     messageRef.current.value = "";
   };
 
+  const updateChatWidth = () => {
+    console.log("RESIZEEEEEEEEEEE");
+    const padding = 32;
+    const currentChatWidth =
+      chatRef.current?.getBoundingClientRect().width || 100;
+    setChatWidth(currentChatWidth - padding);
+  };
+
   useEffect(() => {
     function refetchMessages() {
       queryClient.invalidateQueries({ queryKey: ["getMessage"] });
@@ -57,11 +65,9 @@ export const Chat = ({ to }: ChatProps) => {
     socket?.on("private-message-seen", refetchMessages);
     socket?.on("testing", test);
 
-    const padding = 32;
-    const currentChatWidth =
-      chatRef.current?.getBoundingClientRect().width || 100;
-    setChatWidth(currentChatWidth - padding);
+    updateChatWidth();
 
+    window.addEventListener("resize", updateChatWidth);
     return () => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
@@ -98,8 +104,11 @@ export const Chat = ({ to }: ChatProps) => {
         ))}
       </div>
 
-      <footer className="fixed bottom-[10px]" style={{ width: chatWidth }}>
-        <form className="flex gap-2 my-auto" onSubmit={handleSendMessage}>
+      <footer
+        className="fixed justify-center bottom-[10px]"
+        style={{ width: chatWidth }}
+      >
+        <form className="flex gap-2" onSubmit={handleSendMessage}>
           <input
             type="text"
             className="bg-gray-200 flex-1 p-2"
