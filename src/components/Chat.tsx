@@ -45,7 +45,6 @@ export const Chat = ({ to }: ChatProps) => {
   };
 
   const updateChatWidth = () => {
-    console.log("RESIZEEEEEEEEEEE");
     const padding = 32;
     const currentChatWidth =
       chatRef.current?.getBoundingClientRect().width || 100;
@@ -72,6 +71,7 @@ export const Chat = ({ to }: ChatProps) => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
       socket?.off("testing", test);
+      window.removeEventListener("resize", updateChatWidth);
     };
   }, []);
 
