@@ -51,14 +51,24 @@ export const Chat = ({ to }: ChatProps) => {
     setChatWidth(currentChatWidth - padding);
   };
 
+  const scrollToEnd = () => {
+    const scrollableDiv = document.getElementById("scroll");
+    if (scrollableDiv) {
+      scrollableDiv.scrollTop = scrollableDiv?.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToEnd();
+  }, [data]);
+
   useEffect(() => {
     function refetchMessages(payload: { to: string }) {
-      if (payload.to !== params.to) return;
+      // if (payload.to !== params.to) return;
       queryClient.invalidateQueries({ queryKey: ["getMessage"] });
     }
     function test(payload: { to: string }) {
       if (payload.to === params.to) return;
-
       queryClient.invalidateQueries({ queryKey: ["getFriend"] });
     }
     socket?.on("private-message", refetchMessages);
@@ -66,8 +76,8 @@ export const Chat = ({ to }: ChatProps) => {
     socket?.on("testing", test);
 
     updateChatWidth();
-
     window.addEventListener("resize", updateChatWidth);
+
     return () => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
@@ -78,7 +88,7 @@ export const Chat = ({ to }: ChatProps) => {
 
   return (
     <div
-      className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2"
+      className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen"
       ref={chatRef}
     >
       <header>
