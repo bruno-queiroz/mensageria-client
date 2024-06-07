@@ -103,7 +103,8 @@ export const Chat = ({ to }: ChatProps) => {
             </div>
 
             <div className="flex flex-col">
-              <span>{data?.data?.user.name}</span>
+              <span className="font-semibold">{data?.data?.user.name}</span>
+              <span>online</span>
             </div>
           </div>
         </div>
