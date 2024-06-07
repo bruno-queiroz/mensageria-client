@@ -88,7 +88,7 @@ export const Chat = ({ to }: ChatProps) => {
         </div>
       </header>
 
-      <div className="flex flex-col gap-2 flex-1 py-2 pb-[50px]">
+      <div className="flex flex-col gap-2 flex-1 py-2">
         {data?.data?.messages.map((message, i) => (
           <Message {...message} key={i} />
         ))}
