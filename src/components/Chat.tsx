@@ -116,10 +116,7 @@ export const Chat = ({ to }: ChatProps) => {
         ))}
       </div>
 
-      <footer
-        className="fixed justify-center bottom-[10px]"
-        style={{ width: chatWidth }}
-      >
+      <footer className="sticky justify-center bottom-[10px]">
         <form className="flex gap-2" onSubmit={handleSendMessage}>
           <input
             type="text"
