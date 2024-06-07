@@ -20,8 +20,6 @@ export const Chat = ({ to }: ChatProps) => {
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
-  const [chatWidth, setChatWidth] = useState(0);
-  const chatRef = useRef<HTMLDivElement>(null);
 
   const handleSendMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -76,10 +74,7 @@ export const Chat = ({ to }: ChatProps) => {
   }, []);
 
   return (
-    <div
-      className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen"
-      ref={chatRef}
-    >
+    <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
       <header className="sticky top-0 p-2 bg-gray-400 z-50">
         <div>
           <div className="flex items-center gap-2">
