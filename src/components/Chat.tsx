@@ -44,13 +44,6 @@ export const Chat = ({ to }: ChatProps) => {
     messageRef.current.value = "";
   };
 
-  const updateChatWidth = () => {
-    const padding = 32;
-    const currentChatWidth =
-      chatRef.current?.getBoundingClientRect().width || 100;
-    setChatWidth(currentChatWidth - padding);
-  };
-
   const scrollToEnd = () => {
     const scrollableDiv = document.getElementById("scroll");
     if (scrollableDiv) {
@@ -75,14 +68,10 @@ export const Chat = ({ to }: ChatProps) => {
     socket?.on("private-message-seen", refetchMessages);
     socket?.on("testing", test);
 
-    updateChatWidth();
-    window.addEventListener("resize", updateChatWidth);
-
     return () => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
       socket?.off("testing", test);
-      window.removeEventListener("resize", updateChatWidth);
     };
   }, []);
 
