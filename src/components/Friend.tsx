@@ -1,11 +1,22 @@
-import { useCurrentChat } from "@/hooks/useCurrentChat";
+import React from "react";
 import { MessageUser } from "@/services/message/types";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 export function Friend(user: MessageUser) {
+  const params = useParams<{ to: string }>();
+
+  const preventScrollingToTop = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ) => {
+    if (params.to === user.id) {
+      e.preventDefault();
+    }
+  };
   return (
     <Link
       href={`/chat/${user.id}`}
+      onClick={preventScrollingToTop}
       className="flex items-center gap-4 p-4 rounded bg-blue-50 cursor-pointer hover:bg-blue-100"
     >
       <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
