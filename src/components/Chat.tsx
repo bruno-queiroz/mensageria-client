@@ -91,7 +91,7 @@ export const Chat = ({ to }: ChatProps) => {
       className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen"
       ref={chatRef}
     >
-      <header>
+      <header className="sticky top-0 p-2 bg-gray-400 z-50">
         <div>
           <div className="flex items-center gap-2">
             <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
