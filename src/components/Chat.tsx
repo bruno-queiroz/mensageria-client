@@ -30,15 +30,12 @@ export const Chat = ({ to }: ChatProps) => {
     };
     if (!newMessage.toUser) return;
 
-    const message = await sendMessage(newMessage);
+    await sendMessage(newMessage);
 
     socket?.emit("private-message", {
       to: data?.data?.user.id,
     });
 
-    socket?.emit("testing", {
-      to: data?.data?.user.id,
-    });
     messageRef.current.value = "";
   };
 
@@ -54,28 +51,25 @@ export const Chat = ({ to }: ChatProps) => {
   }, [data]);
 
   useEffect(() => {
-    function refetchMessages(payload: { to: string }) {
-      // if (payload.to !== params.to) return;
-      queryClient.invalidateQueries({ queryKey: ["getMessage"] });
-    }
-    function test(payload: { to: string }) {
-      if (payload.to === params.to) return;
+    function refetchMessages(payload: { to: string; from: string }) {
+      if (payload.to === params.to || payload.from === params.to) {
+        queryClient.invalidateQueries({ queryKey: ["getMessage"] });
+      }
       queryClient.invalidateQueries({ queryKey: ["getFriend"] });
     }
+
     socket?.on("private-message", refetchMessages);
     socket?.on("private-message-seen", refetchMessages);
-    socket?.on("testing", test);
 
     return () => {
       socket?.off("private-message", refetchMessages);
       socket?.off("private-message-seen", refetchMessages);
-      socket?.off("testing", test);
     };
   }, []);
 
   return (
     <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
-      <header className="sticky top-0 p-2 bg-gray-400 z-50">
+      <header className="sticky top-0 p-2 bg-gray-400 z-10">
         <div>
           <div className="flex items-center gap-2">
             <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
