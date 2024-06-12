@@ -11,5 +11,5 @@ export interface MessageUser {
   name: string;
   image: string;
   last_message: string;
-  message_amount: string;
+  message_amount: number;
 }
