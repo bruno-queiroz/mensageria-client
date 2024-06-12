@@ -1,10 +1,5 @@
+import { MessageUser } from "../message/types";
 import { ServerResponse } from "../types";
-
-interface User {
-  id: string;
-  name: string;
-  image: string;
-}
 
 export const getFriends = async () => {
   const response = await fetch(
@@ -13,6 +8,7 @@ export const getFriends = async () => {
       credentials: "include",
     }
   );
-  const data: ServerResponse<User[]> = await response.json();
+
+  const data: ServerResponse<MessageUser[]> = await response.json();
   return data;
 };
