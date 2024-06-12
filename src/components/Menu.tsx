@@ -32,7 +32,7 @@ export const Menu = () => {
       <div className={`${!isMenuOpen && "hidden"}`}>
         <div
           onClick={toggleMenu}
-          className="bg-black/25 fixed top-0 bottom-0 right-0 left-0 z-10"
+          className="bg-black/25 fixed top-0 bottom-0 right-0 left-0 z-20"
         />
 
         <aside className="fixed right-0 z-20 bg-white top-0 bottom-0 p-4 rounded-tl-lg rounded-bl-lg">
