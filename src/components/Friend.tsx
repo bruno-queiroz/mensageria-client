@@ -2,6 +2,7 @@ import React from "react";
 import { MessageUser } from "@/services/message/types";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { format } from "date-fns/format";
 
 export function Friend(user: MessageUser) {
   const params = useParams<{ to: string }>();
@@ -34,8 +35,13 @@ export function Friend(user: MessageUser) {
       </div>
 
       <div className="ml-auto">
+        {user?.last_message?.length && (
+          <div className="text-gray-600 text-sm">
+            {format(user.last_message_sent_at, "H:mm")}
+          </div>
+        )}
         {user?.message_amount > 0 && (
-          <div className="py-[2px] px-2 text-white bg-blue-400 rounded-full">
+          <div className="py-[2px] px-2 w-[max-content] ml-auto text-white bg-blue-400 rounded-full">
             {user.message_amount}
           </div>
         )}
