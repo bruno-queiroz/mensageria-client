@@ -3,7 +3,11 @@ import { socket } from "@/app/layout";
 import Message from "@/components/Message";
 import { getMessage } from "@/services/message/getMessage";
 import { sendMessage } from "@/services/message/sendMessage";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
@@ -13,9 +17,14 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, isPending, refetch } = useQuery({
+  const { data, isPending, refetch } = useInfiniteQuery({
     queryKey: ["getMessage"],
-    queryFn: () => getMessage(to),
+    queryFn: getMessage,
+    initialPageParam: { date: new Date(), to: to },
+    getNextPageParam: (lastPage) => ({
+      date: lastPage.data?.messages[lastPage.data?.messages.length - 1].sentAt,
+      to: to,
+    }),
   });
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
@@ -26,14 +35,14 @@ export const Chat = ({ to }: ChatProps) => {
     if (!messageRef.current) return;
     const newMessage = {
       message: messageRef.current!.value,
-      toUser: data?.data?.user.id!,
+      toUser: data?.pages[0]?.data?.user.id!,
     };
     if (!newMessage.toUser) return;
 
     await sendMessage(newMessage);
 
     socket?.emit("private-message", {
-      to: data?.data?.user.id,
+      to: data?.pages[0]?.data?.user.id,
     });
 
     messageRef.current.value = "";
@@ -74,14 +83,16 @@ export const Chat = ({ to }: ChatProps) => {
           <div className="flex items-center gap-2">
             <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
               <img
-                src={data?.data?.user.image}
+                src={data?.pages[0]?.data?.user.image}
                 alt=""
                 className="rounded-full"
               />
             </div>
 
             <div className="flex flex-col">
-              <span className="font-semibold">{data?.data?.user.name}</span>
+              <span className="font-semibold">
+                {data?.pages[0]?.data?.user.name}
+              </span>
               <span>online</span>
             </div>
           </div>
@@ -89,9 +100,11 @@ export const Chat = ({ to }: ChatProps) => {
       </header>
 
       <div className="flex flex-col gap-2 flex-1 py-2">
-        {data?.data?.messages.map((message, i) => (
-          <Message {...message} key={i} />
-        ))}
+        {data?.pages.map((page) =>
+          page?.data?.messages.map((message, i) => (
+            <Message {...message} key={i} />
+          ))
+        )}
       </div>
 
       <footer className="sticky justify-center bottom-[10px]">
