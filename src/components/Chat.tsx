@@ -3,11 +3,7 @@ import { socket } from "@/app/layout";
 import Message from "@/components/Message";
 import { getMessage } from "@/services/message/getMessage";
 import { sendMessage } from "@/services/message/sendMessage";
-import {
-  useInfiniteQuery,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
@@ -17,12 +13,14 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, isPending, refetch } = useInfiniteQuery({
+  const { data, isPending, refetch, fetchNextPage } = useInfiniteQuery({
     queryKey: ["getMessage"],
     queryFn: getMessage,
-    initialPageParam: { date: new Date(), to: to },
+    initialPageParam: { date: new Date().toISOString(), to: to },
     getNextPageParam: (lastPage) => ({
-      date: lastPage.data?.messages[lastPage.data?.messages.length - 1].sentAt,
+      date: lastPage?.data?.messages[
+        lastPage.data?.messages.length - 1
+      ].sentAt.toISOString(),
       to: to,
     }),
   });
@@ -76,6 +74,11 @@ export const Chat = ({ to }: ChatProps) => {
     };
   }, []);
 
+  const nextPage = () => {
+    console.log("fetch next page");
+    fetchNextPage();
+  };
+  console.log("data", data);
   return (
     <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
       <header className="sticky top-0 p-2 bg-gray-400 z-10">
@@ -94,6 +97,10 @@ export const Chat = ({ to }: ChatProps) => {
                 {data?.pages[0]?.data?.user.name}
               </span>
               <span>online</span>
+            </div>
+
+            <div>
+              <button onClick={nextPage}>infinite</button>
             </div>
           </div>
         </div>
