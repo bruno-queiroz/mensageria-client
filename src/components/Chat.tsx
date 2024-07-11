@@ -13,15 +13,17 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, isPending, refetch, fetchNextPage } = useInfiniteQuery({
+  const { data, fetchNextPage } = useInfiniteQuery({
     queryKey: ["getMessage"],
     queryFn: getMessage,
     initialPageParam: { date: new Date().toISOString(), to: to },
     getNextPageParam: (lastPage) => ({
-      date: lastPage?.data?.messages[
-        lastPage.data?.messages.length - 1
-      ].sentAt.toISOString(),
+      date: lastPage?.data?.messages[0].sentAt,
       to: to,
+    }),
+    select: (data) => ({
+      pages: [...data.pages].reverse(),
+      pageParams: [...data.pageParams].reverse(),
     }),
   });
   const params = useParams<{ to: string }>();
@@ -53,9 +55,9 @@ export const Chat = ({ to }: ChatProps) => {
     }
   };
 
-  useEffect(() => {
-    scrollToEnd();
-  }, [data]);
+  // useEffect(() => {
+  //   scrollToEnd();
+  // }, [data]);
 
   useEffect(() => {
     function refetchMessages(payload: { to: string; from: string }) {
@@ -75,10 +77,9 @@ export const Chat = ({ to }: ChatProps) => {
   }, []);
 
   const nextPage = () => {
-    console.log("fetch next page");
     fetchNextPage();
   };
-  console.log("data", data);
+
   return (
     <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
       <header className="sticky top-0 p-2 bg-gray-400 z-10">
