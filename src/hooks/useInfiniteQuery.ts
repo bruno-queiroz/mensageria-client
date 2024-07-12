@@ -10,7 +10,7 @@ export const useInfiniteQuery = (to: string) => {
       date: data[data.length - 1].data?.messages[0].sentAt,
       to,
     });
-    setDate([...data, newData]);
+    setDate([...data, newData].reverse());
   };
 
   useEffect(() => {
