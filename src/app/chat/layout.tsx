@@ -7,7 +7,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       <div className="bg-blue-300 w-11 h-full fixed"></div>
       <div className="grid grid-cols-chat h-full ml-11 pl-2 gap-2">
         <Friends />
-        <div className="overflow-auto">{children}</div>
+        <div className="overflow-auto" id="scrollable">
+          {children}
+        </div>
       </div>
     </section>
   );
