@@ -1,27 +1,30 @@
-import { getAuthCookie } from "@/utils/getAuthCookie";
+import { socket } from "@/app/layout";
 import { ServerResponse } from "../types";
 import { MessageUser, PrivateMessage } from "./types";
 
-export type GetMessage = { user: MessageUser; messages: PrivateMessage[] };
+export type GetMessage = {
+  user: MessageUser;
+  messages: PrivateMessage[];
+  isRowModified: boolean;
+};
 
-export const getMessage = async (to: string | undefined) => {
-  const authCookie = getAuthCookie();
-
+export const getMessage = async (pageParam: any) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/message?toUser=${to}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/message?toUser=${pageParam.to}&date=${pageParam.date}`,
     {
+      method: "PATCH",
       credentials: "include",
-      headers: {
-        Cookie: authCookie,
-        Origin: process.env.NEXT_PUBLIC_DEPLOY_URL!,
-      },
-      next: {
-        tags: ["getMessage"],
-      },
-      cache: "no-cache",
     }
   );
+
   const data: ServerResponse<GetMessage> = await response.json();
+  if (data?.isOk) {
+    if (data.data?.isRowModified) {
+      socket?.emit("private-message-seen", {
+        to: data?.data?.user.id,
+      });
+    }
+  }
   data?.data?.messages.reverse();
   return data;
 };
