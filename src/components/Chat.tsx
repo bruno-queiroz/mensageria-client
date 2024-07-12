@@ -1,9 +1,9 @@
 "use client";
 import { socket } from "@/app/layout";
 import Message from "@/components/Message";
-import { getMessage } from "@/services/message/getMessage";
+import { useInfiniteQuery } from "@/hooks/useInfiniteQuery";
 import { sendMessage } from "@/services/message/sendMessage";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
@@ -13,19 +13,7 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, fetchNextPage } = useInfiniteQuery({
-    queryKey: ["getMessage"],
-    queryFn: getMessage,
-    initialPageParam: { date: new Date().toISOString(), to: to },
-    getNextPageParam: (lastPage) => ({
-      date: lastPage?.data?.messages[0].sentAt,
-      to: to,
-    }),
-    select: (data) => ({
-      pages: [...data.pages].reverse(),
-      pageParams: [...data.pageParams].reverse(),
-    }),
-  });
+  const { data, fetchNextPage } = useInfiniteQuery(to);
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -35,14 +23,14 @@ export const Chat = ({ to }: ChatProps) => {
     if (!messageRef.current) return;
     const newMessage = {
       message: messageRef.current!.value,
-      toUser: data?.pages[0]?.data?.user.id!,
+      toUser: data?.[0].data?.user.id!,
     };
     if (!newMessage.toUser) return;
 
     await sendMessage(newMessage);
 
     socket?.emit("private-message", {
-      to: data?.pages[0]?.data?.user.id,
+      to: data?.[0]?.data?.user.id,
     });
 
     messageRef.current.value = "";
@@ -55,9 +43,10 @@ export const Chat = ({ to }: ChatProps) => {
     }
   };
 
-  // useEffect(() => {
-  //   scrollToEnd();
-  // }, [data]);
+  useEffect(() => {
+    // scrollToEnd();
+    console.log(data);
+  }, [data]);
 
   useEffect(() => {
     function refetchMessages(payload: { to: string; from: string }) {
@@ -79,7 +68,6 @@ export const Chat = ({ to }: ChatProps) => {
   const nextPage = () => {
     fetchNextPage();
   };
-
   return (
     <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
       <header className="sticky top-0 p-2 bg-gray-400 z-10">
@@ -87,7 +75,7 @@ export const Chat = ({ to }: ChatProps) => {
           <div className="flex items-center gap-2">
             <div className="w-[60px] h-[60px] bg-blue-300 rounded-full">
               <img
-                src={data?.pages[0]?.data?.user.image}
+                src={data?.[0]?.data?.user.image}
                 alt=""
                 className="rounded-full"
               />
@@ -95,7 +83,7 @@ export const Chat = ({ to }: ChatProps) => {
 
             <div className="flex flex-col">
               <span className="font-semibold">
-                {data?.pages[0]?.data?.user.name}
+                {data?.[0]?.data?.user.name}
               </span>
               <span>online</span>
             </div>
@@ -108,7 +96,7 @@ export const Chat = ({ to }: ChatProps) => {
       </header>
 
       <div className="flex flex-col gap-2 flex-1 py-2">
-        {data?.pages.map((page) =>
+        {data?.map((page) =>
           page?.data?.messages.map((message, i) => (
             <Message {...message} key={i} />
           ))
