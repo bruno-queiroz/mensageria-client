@@ -37,15 +37,16 @@ export const Chat = ({ to }: ChatProps) => {
   };
 
   const scrollToEnd = () => {
-    const scrollableDiv = document.getElementById("scroll");
+    const scrollableDiv = document.getElementById("scrollable");
     if (scrollableDiv) {
       scrollableDiv.scrollTop = scrollableDiv?.scrollHeight;
     }
   };
 
   useEffect(() => {
-    // scrollToEnd();
-    console.log(data);
+    if (data.length === 1) {
+      scrollToEnd();
+    }
   }, [data]);
 
   useEffect(() => {
