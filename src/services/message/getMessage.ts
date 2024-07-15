@@ -8,9 +8,15 @@ export type GetMessage = {
   isRowModified: boolean;
 };
 
-export const getMessage = async (pageParam: any) => {
+export interface GetMessageParams {
+  date: string | undefined;
+  to: string;
+  mode: string;
+}
+
+export const getMessage = async ({ date, mode, to }: GetMessageParams) => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/message?toUser=${pageParam.to}&date=${pageParam.date}&mode=${pageParam.mode}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/message?toUser=${to}&date=${date}&mode=${mode}`,
     {
       method: "PATCH",
       credentials: "include",
