@@ -9,6 +9,7 @@ export const useInfiniteQuery = (to: string) => {
     const newData = await getMessage({
       date: data[data.length - 1].data?.messages[0].sentAt,
       to,
+      mode: "default",
     });
     setDate([...data, newData].reverse());
   };
@@ -18,6 +19,7 @@ export const useInfiniteQuery = (to: string) => {
       const newData = await getMessage({
         date: new Date().toISOString(),
         to: to,
+        mode: "default",
       });
       setDate([...data, newData]);
     })();
