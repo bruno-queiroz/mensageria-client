@@ -9,7 +9,7 @@ export type GetMessage = {
 };
 
 export interface GetMessageParams {
-  date: string | undefined;
+  date?: string;
   to: string;
   mode: string;
 }
