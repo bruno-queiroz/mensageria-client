@@ -5,7 +5,7 @@ import { useInfiniteQuery } from "@/hooks/useInfiniteQuery";
 import { sendMessage } from "@/services/message/sendMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
 
 interface ChatProps {
@@ -13,7 +13,7 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, fetchNextPage } = useInfiniteQuery(to);
+  const { data, fetchNextPage, fetchNewMessages } = useInfiniteQuery(to);
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -52,7 +52,7 @@ export const Chat = ({ to }: ChatProps) => {
   useEffect(() => {
     function refetchMessages(payload: { to: string; from: string }) {
       if (payload.to === params.to || payload.from === params.to) {
-        queryClient.invalidateQueries({ queryKey: ["getMessage"] });
+        fetchNewMessages();
       }
       queryClient.invalidateQueries({ queryKey: ["getFriend"] });
     }
