@@ -14,6 +14,15 @@ export const useInfiniteQuery = (to: string) => {
     setDate([...data, newData].reverse());
   };
 
+  const fetchNewMessages = async () => {
+    const newData = await getMessage({
+      to,
+      mode: "not-seen",
+    });
+
+    setDate([newData, ...data]);
+  };
+
   useEffect(() => {
     (async () => {
       const newData = await getMessage({
@@ -28,5 +37,6 @@ export const useInfiniteQuery = (to: string) => {
   return {
     data,
     fetchNextPage,
+    fetchNewMessages,
   };
 };
