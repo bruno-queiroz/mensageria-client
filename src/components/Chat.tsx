@@ -2,10 +2,11 @@
 import { socket } from "@/app/layout";
 import Message from "@/components/Message";
 import { useInfiniteQuery } from "@/hooks/useInfiniteQuery";
+import { useIntersectObserver } from "@/hooks/useIntersectObserver";
 import { sendMessage } from "@/services/message/sendMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { FormEvent, useEffect, useRef } from "react";
+import { FormEvent, useEffect, useInsertionEffect, useRef } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
 
 interface ChatProps {
@@ -14,6 +15,8 @@ interface ChatProps {
 
 export const Chat = ({ to }: ChatProps) => {
   const { data, fetchNextPage, fetchNewMessages } = useInfiniteQuery(to);
+  useIntersectObserver(data, fetchNextPage);
+
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -95,6 +98,8 @@ export const Chat = ({ to }: ChatProps) => {
           </div>
         </div>
       </header>
+
+      <div id="observable" className="bg-red-400 h-11 w-full"></div>
 
       <div className="flex flex-col gap-2 flex-1 py-2">
         {data?.map((page) =>
