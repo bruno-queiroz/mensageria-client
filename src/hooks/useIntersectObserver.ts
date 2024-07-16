@@ -1,7 +1,23 @@
+import { GetMessage } from "@/services/message/getMessage";
+import { ServerResponse } from "@/services/types";
 import { useEffect, useRef } from "react";
 
-export const useIntersectObserver = (fetchNextPage: () => void) => {
+export const useIntersectObserver = (
+  data: ServerResponse<GetMessage>[],
+  fetchNextPage: () => void
+) => {
   const observerRef = useRef<IntersectionObserver>();
+
+  const handleIntersect = (
+    entries: IntersectionObserverEntry[],
+    observer: IntersectionObserver
+  ) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        fetchNextPage();
+      }
+    });
+  };
 
   const createObserver = (boxElement: HTMLElement | null) => {
     if (!boxElement) return;
@@ -17,11 +33,12 @@ export const useIntersectObserver = (fetchNextPage: () => void) => {
   };
 
   useEffect(() => {
+    if (data.length === 0) return;
     const boxElement = document.getElementById("observable");
     createObserver(boxElement);
 
     return () => observerRef.current?.disconnect();
-  }, []);
+  }, [data.length > 0]);
 
   return {
     createObserver,
