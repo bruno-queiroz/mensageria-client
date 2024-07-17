@@ -1,11 +1,17 @@
 import { GetMessage, getMessage } from "@/services/message/getMessage";
 import { ServerResponse } from "@/services/types";
-import { useEffect, useState } from "react";
+import { MutableRefObject, useEffect, useState } from "react";
 
-export const useInfiniteQuery = (to: string) => {
+export const useInfiniteQuery = (
+  to: string,
+  previousScrollHeightRef: MutableRefObject<number>
+) => {
   const [data, setDate] = useState<ServerResponse<GetMessage>[]>([]);
 
   const fetchNextPage = async () => {
+    const scrollableDiv = document.getElementById("scrollable");
+    previousScrollHeightRef.current = scrollableDiv!.scrollHeight;
+
     const newData = await getMessage({
       date: data[data.length - 1].data?.messages[0].sentAt,
       to,
