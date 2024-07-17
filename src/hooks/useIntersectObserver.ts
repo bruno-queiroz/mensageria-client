@@ -21,10 +21,10 @@ export const useIntersectObserver = (
 
   const createObserver = (boxElement: HTMLElement | null) => {
     if (!boxElement) return;
-
+    const chatHeaderHeight = "-76px";
     const options = {
       root: document.getElementById("scrollable"),
-      rootMargin: "0px",
+      rootMargin: chatHeaderHeight,
       threshold: 0,
     };
 
@@ -39,8 +39,4 @@ export const useIntersectObserver = (
 
     return () => observerRef.current?.disconnect();
   }, [data.length > 0]);
-
-  return {
-    createObserver,
-  };
 };
