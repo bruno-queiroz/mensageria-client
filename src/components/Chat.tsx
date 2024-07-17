@@ -91,9 +91,6 @@ export const Chat = ({ to }: ChatProps) => {
     };
   }, []);
 
-  const nextPage = () => {
-    fetchNextPage();
-  };
   return (
     <div className="flex flex-col gap-2 justify-between relative bg-gray-400 p-2 min-h-screen">
       <header className="sticky top-0 p-2 bg-gray-400 z-10">
@@ -112,10 +109,6 @@ export const Chat = ({ to }: ChatProps) => {
                 {data?.[0]?.data?.user.name}
               </span>
               <span>online</span>
-            </div>
-
-            <div>
-              <button onClick={nextPage}>infinite</button>
             </div>
           </div>
         </div>
