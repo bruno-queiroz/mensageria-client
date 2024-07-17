@@ -6,7 +6,7 @@ import { useIntersectObserver } from "@/hooks/useIntersectObserver";
 import { sendMessage } from "@/services/message/sendMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import { FormEvent, useEffect, useInsertionEffect, useRef } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { GrSend as SendIcon } from "react-icons/gr";
 
 interface ChatProps {
@@ -14,7 +14,14 @@ interface ChatProps {
 }
 
 export const Chat = ({ to }: ChatProps) => {
-  const { data, fetchNextPage, fetchNewMessages } = useInfiniteQuery(to);
+  const [currentScrollHeight, setCurrentScrollHeight] = useState(0);
+  const previousScrollHeightRef = useRef<number>(0);
+
+  const { data, fetchNextPage, fetchNewMessages } = useInfiniteQuery(
+    to,
+    previousScrollHeightRef
+  );
+
   useIntersectObserver(data, fetchNextPage);
 
   const params = useParams<{ to: string }>();
@@ -50,7 +57,22 @@ export const Chat = ({ to }: ChatProps) => {
     if (data.length === 1) {
       scrollToEnd();
     }
+
+    if (data.length > 1) {
+      const scrollableDiv = document.getElementById("scrollable");
+      if (!scrollableDiv) return;
+
+      setCurrentScrollHeight(scrollableDiv!.scrollHeight);
+    }
   }, [data]);
+
+  useEffect(() => {
+    const scrollableDiv = document.getElementById("scrollable");
+    if (!scrollableDiv) return;
+
+    scrollableDiv.scrollTop =
+      currentScrollHeight! - previousScrollHeightRef.current;
+  }, [currentScrollHeight]);
 
   useEffect(() => {
     function refetchMessages(payload: { to: string; from: string }) {
@@ -99,7 +121,7 @@ export const Chat = ({ to }: ChatProps) => {
         </div>
       </header>
 
-      <div id="observable" className="bg-red-400 h-11 w-full"></div>
+      <div id="observable"></div>
 
       <div className="flex flex-col gap-2 flex-1 py-2">
         {data?.map((page) =>
