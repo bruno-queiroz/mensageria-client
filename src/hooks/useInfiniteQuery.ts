@@ -26,7 +26,7 @@ export const useInfiniteQuery = (
       mode: "not-seen",
     });
 
-    setDate([newData, ...data]);
+    setDate((data) => [...data, newData]);
   };
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useInfiniteQuery = (
         to: to,
         mode: "default",
       });
-      setDate([...data, newData]);
+      setDate([newData]);
     })();
   }, []);
 
