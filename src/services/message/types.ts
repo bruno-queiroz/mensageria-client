@@ -3,7 +3,7 @@ export interface PrivateMessage {
   fromUser: string;
   message: string;
   isSeen: boolean;
-  sentAt: Date;
+  sentAt: string;
 }
 
 export interface MessageUser {
@@ -11,5 +11,6 @@ export interface MessageUser {
   name: string;
   image: string;
   last_message: string;
+  last_message_sent_at: string;
   message_amount: number;
 }
