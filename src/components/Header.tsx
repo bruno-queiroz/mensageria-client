@@ -3,7 +3,7 @@ import { Menu } from "./Menu";
 
 export default function Header() {
   return (
-    <header className="p-4">
+    <header className="bg-gray-200 p-4">
       <div className="flex gap-12 items-center">
         <Link href="/" className="font-bold text-3xl">
           Mensageria
