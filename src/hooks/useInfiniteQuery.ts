@@ -7,7 +7,7 @@ export const useInfiniteQuery = (
   to: string,
   previousScrollHeightRef: MutableRefObject<number>
 ) => {
-  const [data, setDate] = useState<ServerResponse<GetMessage>[]>([]);
+  const [data, setData] = useState<ServerResponse<GetMessage>[]>([]);
 
   const fetchNextPage = async () => {
     const scrollableDiv = document.getElementById("scrollable");
@@ -18,7 +18,7 @@ export const useInfiniteQuery = (
       to,
       mode: "default",
     });
-    setDate([...data, newData].reverse());
+    setData([...data, newData].reverse());
   };
 
   const fetchNewMessages = async () => {
@@ -27,7 +27,7 @@ export const useInfiniteQuery = (
       mode: "not-seen",
     });
 
-    setDate((data) => {
+    setData((data) => {
       const dataStringified = JSON.stringify(data);
 
       const copy = JSON.parse(dataStringified);
@@ -46,7 +46,7 @@ export const useInfiniteQuery = (
         to: to,
         mode: "default",
       });
-      setDate([newData]);
+      setData([newData]);
     })();
   }, []);
 
