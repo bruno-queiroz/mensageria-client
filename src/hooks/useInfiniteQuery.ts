@@ -1,4 +1,5 @@
 import { GetMessage, getMessage } from "@/services/message/getMessage";
+import { PrivateMessage } from "@/services/message/types";
 import { ServerResponse } from "@/services/types";
 import { MutableRefObject, useEffect, useState } from "react";
 
@@ -26,7 +27,16 @@ export const useInfiniteQuery = (
       mode: "not-seen",
     });
 
-    setDate((data) => [...data, newData]);
+    setDate((data) => {
+      const dataStringified = JSON.stringify(data);
+
+      const copy = JSON.parse(dataStringified);
+      const lastPage = copy[copy.length - 1].data as GetMessage;
+      const newMessages = newData.data?.messages as PrivateMessage[];
+      lastPage.messages.push(...newMessages);
+
+      return copy;
+    });
   };
 
   useEffect(() => {
