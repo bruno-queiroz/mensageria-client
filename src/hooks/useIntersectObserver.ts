@@ -37,6 +37,9 @@ export const useIntersectObserver = (
     const boxElement = document.getElementById("observable");
     createObserver(boxElement);
 
-    return () => observerRef.current?.disconnect();
+    return () => {
+      observerRef.current?.disconnect();
+      observerRef.current?.unobserve(boxElement!);
+    };
   }, [data.length > 0]);
 };
