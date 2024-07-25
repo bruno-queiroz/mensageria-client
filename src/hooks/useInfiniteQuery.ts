@@ -3,22 +3,29 @@ import { PrivateMessage } from "@/services/message/types";
 import { ServerResponse } from "@/services/types";
 import { MutableRefObject, useEffect, useState } from "react";
 
+export let data: ServerResponse<GetMessage>[] = [];
+
 export const useInfiniteQuery = (
   to: string,
   previousScrollHeightRef: MutableRefObject<number>
 ) => {
-  const [data, setData] = useState<ServerResponse<GetMessage>[]>([]);
+  const [rerender, setRerender] = useState([]);
 
   const fetchNextPage = async () => {
     const scrollableDiv = document.getElementById("scrollable");
     previousScrollHeightRef.current = scrollableDiv!.scrollHeight;
 
+    const firstPage = data[0];
+    const firstMessage = firstPage.data?.messages[0];
+
     const newData = await getMessage({
-      date: data[data.length - 1].data?.messages[0].sentAt,
+      date: firstMessage?.sentAt,
       to,
       mode: "default",
     });
-    setData([...data, newData].reverse());
+
+    data = [...data, newData].reverse();
+    setRerender([]);
   };
 
   const fetchNewMessages = async () => {
@@ -26,17 +33,11 @@ export const useInfiniteQuery = (
       to,
       mode: "not-seen",
     });
+    const lastPage = data[data.length - 1].data as GetMessage;
+    const newMessages = newData.data?.messages as PrivateMessage[];
 
-    setData((data) => {
-      const dataStringified = JSON.stringify(data);
-
-      const copy = JSON.parse(dataStringified);
-      const lastPage = copy[copy.length - 1].data as GetMessage;
-      const newMessages = newData.data?.messages as PrivateMessage[];
-      lastPage.messages.push(...newMessages);
-
-      return copy;
-    });
+    lastPage.messages.push(...newMessages);
+    setRerender([]);
   };
 
   useEffect(() => {
@@ -46,12 +47,13 @@ export const useInfiniteQuery = (
         to: to,
         mode: "default",
       });
-      setData([newData]);
+      data = [newData];
+      setRerender([]);
     })();
   }, []);
 
   return {
-    data,
+    rerender,
     fetchNextPage,
     fetchNewMessages,
   };
