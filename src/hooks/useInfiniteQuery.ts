@@ -1,6 +1,7 @@
 import { GetMessage, getMessage } from "@/services/message/getMessage";
 import { PrivateMessage } from "@/services/message/types";
 import { ServerResponse } from "@/services/types";
+import { useQueryClient } from "@tanstack/react-query";
 import { MutableRefObject, useEffect, useState } from "react";
 
 export let data: ServerResponse<GetMessage>[] = [];
@@ -10,6 +11,7 @@ export const useInfiniteQuery = (
   previousScrollHeightRef: MutableRefObject<number>
 ) => {
   const [rerender, setRerender] = useState([]);
+  const queryClient = useQueryClient();
 
   const fetchNextPage = async () => {
     const scrollableDiv = document.getElementById("scrollable");
