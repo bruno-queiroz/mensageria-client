@@ -30,6 +30,16 @@ export const useInfiniteQuery = (
     setRerender([]);
   };
 
+  const updateMessageState = () => {
+    const lastPage = data[data.length - 1].data as GetMessage;
+    lastPage.messages.forEach((message) => {
+      message.isSeen = true;
+    });
+
+    queryClient.invalidateQueries({ queryKey: ["getFriend"] });
+    setRerender([]);
+  };
+
   const fetchNewMessages = async () => {
     const newData = await getMessage({
       to,
@@ -58,5 +68,6 @@ export const useInfiniteQuery = (
     rerender,
     fetchNextPage,
     fetchNewMessages,
+    updateMessageState,
   };
 };
