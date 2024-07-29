@@ -1,7 +1,7 @@
 "use client";
 import { socket } from "@/app/layout";
 import Message from "@/components/Message";
-import { useInfiniteQuery } from "@/hooks/useInfiniteQuery";
+import { data, useInfiniteQuery } from "@/hooks/useInfiniteQuery";
 import { useIntersectObserver } from "@/hooks/useIntersectObserver";
 import { sendMessage } from "@/services/message/sendMessage";
 import { useQueryClient } from "@tanstack/react-query";
@@ -16,13 +16,12 @@ interface ChatProps {
 export const Chat = ({ to }: ChatProps) => {
   const [currentScrollHeight, setCurrentScrollHeight] = useState(0);
   const previousScrollHeightRef = useRef<number>(0);
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
 
-  const { data, fetchNextPage, fetchNewMessages } = useInfiniteQuery(
-    to,
-    previousScrollHeightRef
-  );
+  const { rerender, fetchNextPage, fetchNewMessages, updateMessageState } =
+    useInfiniteQuery(to, previousScrollHeightRef);
 
-  useIntersectObserver(data, fetchNextPage);
+  useIntersectObserver(data, isScrolledDown, fetchNextPage);
 
   const params = useParams<{ to: string }>();
   const messageRef = useRef<HTMLInputElement>(null);
@@ -56,6 +55,7 @@ export const Chat = ({ to }: ChatProps) => {
   useEffect(() => {
     if (data.length === 1) {
       scrollToEnd();
+      setIsScrolledDown(true);
     }
 
     if (data.length > 1) {
@@ -64,7 +64,7 @@ export const Chat = ({ to }: ChatProps) => {
 
       setCurrentScrollHeight(scrollableDiv!.scrollHeight);
     }
-  }, [data]);
+  }, [rerender]);
 
   useEffect(() => {
     const scrollableDiv = document.getElementById("scrollable");
@@ -83,11 +83,11 @@ export const Chat = ({ to }: ChatProps) => {
     }
 
     socket?.on("private-message", refetchMessages);
-    socket?.on("private-message-seen", refetchMessages);
+    socket?.on("private-message-seen", updateMessageState);
 
     return () => {
       socket?.off("private-message", refetchMessages);
-      socket?.off("private-message-seen", refetchMessages);
+      socket?.off("private-message-seen", updateMessageState);
     };
   }, []);
 
