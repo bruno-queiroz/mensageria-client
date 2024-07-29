@@ -26,6 +26,8 @@ export const useInfiniteQuery = (
       mode: "default",
     });
 
+    if (newData.data?.messages.length === 0) return;
+
     data = [...data, newData].reverse();
     setRerender([]);
   };
