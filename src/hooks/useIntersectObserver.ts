@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 export const useIntersectObserver = (
   data: ServerResponse<GetMessage>[],
+  isScrolledDown: boolean,
   fetchNextPage: () => void
 ) => {
   const observerRef = useRef<IntersectionObserver>();
@@ -33,13 +34,19 @@ export const useIntersectObserver = (
   };
 
   useEffect(() => {
-    if (data.length === 0) return;
     const boxElement = document.getElementById("observable");
-    createObserver(boxElement);
+    let timeoutId: NodeJS.Timeout;
+
+    if (data.length === 1 && isScrolledDown) {
+      timeoutId = setTimeout(() => {
+        createObserver(boxElement);
+      }, 1000);
+    }
 
     return () => {
       observerRef.current?.disconnect();
       observerRef.current?.unobserve(boxElement!);
+      clearTimeout(timeoutId);
     };
-  }, [data.length > 0]);
+  }, [isScrolledDown]);
 };
