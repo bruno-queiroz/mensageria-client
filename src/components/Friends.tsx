@@ -1,6 +1,4 @@
 "use client";
-import { startSocket } from "@/ws";
-import { FormEvent } from "react";
 import { useFriends } from "@/hooks/useFriends";
 import { Friend } from "./Friend";
 import { FilterFriends } from "./FilterFriends";
