@@ -1,6 +1,7 @@
 import { GetMessage, getMessage } from "@/services/message/getMessage";
 import { PrivateMessage } from "@/services/message/types";
 import { ServerResponse } from "@/services/types";
+import { createMessageElement } from "@/utils/createMessageElement";
 import { useQueryClient } from "@tanstack/react-query";
 import { MutableRefObject, useEffect, useState } from "react";
 
@@ -47,11 +48,14 @@ export const useInfiniteQuery = (
       to,
       mode: "not-seen",
     });
-    const lastPage = data[data.length - 1].data as GetMessage;
     const newMessages = newData.data?.messages as PrivateMessage[];
 
-    lastPage.messages.push(...newMessages);
-    setRerender([]);
+    const chatContainer = document.getElementById("chat-container");
+    if (!chatContainer) return;
+
+    const messageElement = createMessageElement(newMessages[0]);
+
+    chatContainer.appendChild(messageElement);
   };
 
   useEffect(() => {
